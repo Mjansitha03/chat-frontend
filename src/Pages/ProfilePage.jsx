@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { API } from "../Services/Api";
+import { socket } from "../Services/Socket";
 import themes from "../Utils/themes";
 import { motion } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
@@ -23,6 +24,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [form, setForm] = useState({ name: "", phone: "", bio: "" });
 
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -30,6 +32,7 @@ const ProfilePage = () => {
   const fileInputRef = useRef();
 
   const isOwnProfile = !userId || userId === loggedInUser?._id;
+  const isOnline = onlineUsers.includes(user?._id);
 
   // ================= FETCH PROFILE =================
   const fetchProfile = async () => {
@@ -57,6 +60,14 @@ const ProfilePage = () => {
   useEffect(() => {
     fetchProfile();
   }, [userId]);
+
+  useEffect(() => {
+    socket.on("getOnlineUsers", (users) => {
+      setOnlineUsers(users);
+    });
+
+    return () => socket.off("getOnlineUsers");
+  }, []);
 
   // ================= EDIT =================
   const handleChange = (e) => {
@@ -150,7 +161,7 @@ const ProfilePage = () => {
 
           {/* STATUS */}
           <p className="text-sm mt-1 text-slate-400">
-            {user.isOnline ? "🟢 Online" : "⚪ Offline"}
+            {isOnline ? "🟢 Online" : "⚪ Offline"}
           </p>
 
           {/*BIO SECTION */}
@@ -251,6 +262,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
-
-

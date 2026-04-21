@@ -42,10 +42,8 @@ const ChatPage = () => {
     socket.emit("setup", { _id: userId });
 
     const handleOnlineUsers = (users) => {
-      setOnlineUsers(users);
+      setOnlineUsers(users || []);
     };
-
-    const onConnected = () => console.log("Socket connected");
 
     const handleTyping = ({ chatId, userName }) => {
       if (chatId !== selectedChatRef.current?._id) return;
@@ -64,17 +62,14 @@ const ChatPage = () => {
       });
     };
 
-    socket.on("getOnlineUsers", handleOnlineUsers);
-    socket.on("connected", onConnected);
+    socket.on("get_online_users", handleOnlineUsers);
     socket.on("typing", handleTyping);
     socket.on("stop_typing", handleStopTyping);
 
     return () => {
-      socket.off("getOnlineUsers", handleOnlineUsers);
-      socket.off("connected", onConnected);
+      socket.off("get_online_users", handleOnlineUsers);
       socket.off("typing", handleTyping);
       socket.off("stop_typing", handleStopTyping);
-      socket.off("message_received");
     };
   }, [userId]);
 
@@ -184,21 +179,21 @@ const ChatPage = () => {
         const updated = [...prev];
         const index = updated.findIndex((c) => c._id === chatId);
 
-        if (index !== -1) {
-          const chat = updated[index];
+        if (index === -1) return prev;
 
-          updated[index] = {
-            ...chat,
-            latestMessage: msg,
-            unreadCount:
-              selectedChatRef.current?._id === chatId
-                ? 0
-                : (chat.unreadCount || 0) + 1,
-          };
+        const chat = updated[index];
 
-          const moved = updated.splice(index, 1)[0];
-          updated.unshift(moved);
-        }
+        const updatedChat = {
+          ...chat,
+          latestMessage: msg,
+          unreadCount:
+            selectedChatRef.current?._id === chatId
+              ? 0
+              : (chat.unreadCount || 0) + 1,
+        };
+
+        updated.splice(index, 1);
+        updated.unshift(updatedChat);
 
         return updated;
       });
@@ -214,8 +209,11 @@ const ChatPage = () => {
     };
 
     socket.on("message_received", handleReceive);
-    return () => socket.off("message_received", handleReceive);
-  }, []);
+
+    return () => {
+      socket.off("message_received", handleReceive);
+    };
+  }, [userId, selectedChat]);
 
   // ================= DELETE =================
 
@@ -297,10 +295,19 @@ const ChatPage = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedChat?._id) {
-      fetchMessages(selectedChat._id);
-    }
-  }, [selectedChat]);
+    if (!selectedChat?._id) return;
+
+    const chatId = selectedChat._id;
+
+    socket.emit("leave_chat", selectedChatRef.current?._id);
+    socket.emit("join_chat", chatId);
+
+    fetchMessages(chatId);
+
+    return () => {
+      socket.emit("leave_chat", chatId);
+    };
+  }, [selectedChat?._id]);
 
   // ================= SCROLL =================
   useEffect(() => {
@@ -316,7 +323,9 @@ const ChatPage = () => {
     );
   }, [selectedChat, userId]);
 
-  const isOtherOnline = onlineUsers.includes(otherUser?._id);
+  const isOtherOnline = otherUser
+    ? onlineUsers.some((id) => id?.toString() === otherUser._id?.toString())
+    : false;
 
   const avatarSrc = useMemo(() => {
     if (!selectedChat) return null;
