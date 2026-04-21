@@ -32,7 +32,9 @@ const ProfilePage = () => {
   const fileInputRef = useRef();
 
   const isOwnProfile = !userId || userId === loggedInUser?._id;
-  const isOnline = onlineUsers.includes(user?._id);
+  const isOnline = onlineUsers.some(
+    (id) => id?.toString() === user?._id?.toString(),
+  );
 
   // ================= FETCH PROFILE =================
   const fetchProfile = async () => {
@@ -62,11 +64,11 @@ const ProfilePage = () => {
   }, [userId]);
 
   useEffect(() => {
-    socket.on("getOnlineUsers", (users) => {
+    socket.on("get_online_users", (users) => {
       setOnlineUsers(users);
     });
 
-    return () => socket.off("getOnlineUsers");
+    return () => socket.off("get_online_users");
   }, []);
 
   // ================= EDIT =================
