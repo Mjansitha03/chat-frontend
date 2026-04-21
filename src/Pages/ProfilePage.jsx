@@ -18,7 +18,6 @@ const ProfilePage = () => {
   const theme = themes.zynk;
   const navigate = useNavigate();
   const { userId } = useParams();
-
   const loggedInUser = useSelector((state) => state.auth.user);
 
   const [user, setUser] = useState(null);
@@ -32,9 +31,7 @@ const ProfilePage = () => {
   const fileInputRef = useRef();
 
   const isOwnProfile = !userId || userId === loggedInUser?._id;
-  const isOnline = onlineUsers.some(
-    (id) => id?.toString() === user?._id?.toString(),
-  );
+  const isOnline = onlineUsers.includes(user?._id);
 
   // ================= FETCH PROFILE =================
   const fetchProfile = async () => {
@@ -63,13 +60,20 @@ const ProfilePage = () => {
     fetchProfile();
   }, [userId]);
 
+  // ================= SOCKET SETUP =================
   useEffect(() => {
-    socket.on("get_online_users", (users) => {
-      setOnlineUsers(users);
-    });
+    if (!loggedInUser?._id) return;
 
-    return () => socket.off("get_online_users");
-  }, []);
+    socket.emit("setup", { _id: loggedInUser._id });
+
+    const handleOnlineUsers = (users) => setOnlineUsers(users);
+
+    socket.on("get_online_users", handleOnlineUsers);
+
+    return () => {
+      socket.off("get_online_users", handleOnlineUsers);
+    };
+  }, [loggedInUser?._id]);
 
   // ================= EDIT =================
   const handleChange = (e) => {
@@ -90,7 +94,6 @@ const ProfilePage = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-
     try {
       await API.put("/api/users/me", form);
       setIsEditing(false);
@@ -124,27 +127,20 @@ const ProfilePage = () => {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-2xl mx-auto"
       >
-        {/*BACK */}
         <button
           onClick={() => navigate(-1)}
-          title="Back"
           className="text-white/80 hover:text-white text-xl mb-6"
         >
           <FiArrowLeft />
         </button>
 
-        {/* ================= PROFILE CARD ================= */}
-        <motion.div
-          whileHover={{ rotateX: 2, rotateY: -2, scale: 1.01 }}
-          className="p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl text-center"
-        >
-          {/* AVATAR */}
+        {/* PROFILE CARD */}
+        <motion.div className="p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 text-center">
           <div
             onClick={handleAvatarClick}
             className="relative mx-auto w-fit cursor-pointer"
           >
-            <motion.img
-              whileHover={isOwnProfile && isEditing ? { scale: 1.08 } : {}}
+            <img
               src={preview || "https://i.pravatar.cc/150"}
               className="w-36 h-36 rounded-full object-cover border-4 border-indigo-500"
             />
@@ -156,17 +152,13 @@ const ProfilePage = () => {
             )}
           </div>
 
-          {/* NAME */}
           <h2 className="text-3xl font-bold text-white mt-4">{user.name}</h2>
-
           <p className="text-slate-400">{user.email}</p>
 
-          {/* STATUS */}
           <p className="text-sm mt-1 text-slate-400">
             {isOnline ? "🟢 Online" : "⚪ Offline"}
           </p>
 
-          {/*BIO SECTION */}
           <div className="mt-5 p-4 rounded-xl bg-white/5 border border-white/10">
             <p className="text-xs text-slate-400 mb-1">Bio</p>
             <p className="text-sm text-white">
@@ -174,26 +166,23 @@ const ProfilePage = () => {
             </p>
           </div>
 
-          {/* PHONE */}
           {user.phone && (
             <p className="text-slate-300 mt-3 flex justify-center items-center gap-2">
               <FiPhone /> {user.phone}
             </p>
           )}
 
-          {/* EDIT BUTTON */}
           {isOwnProfile && !isEditing && (
             <button
               onClick={() => setIsEditing(true)}
-              title="Edit Profile"
-              className="mt-6 p-3 bg-indigo-500 rounded-xl hover:scale-105"
+              className="mt-6 p-3 bg-indigo-500 rounded-xl"
             >
               <FiEdit />
             </button>
           )}
         </motion.div>
 
-        {/* ================= EDIT FORM ================= */}
+        {/* EDIT FORM */}
         {isOwnProfile && isEditing && (
           <form onSubmit={handleUpdate} className="mt-6 space-y-4">
             <input
@@ -218,19 +207,14 @@ const ProfilePage = () => {
             />
 
             <div className="flex gap-3">
-              <button
-                type="submit"
-                title="Save"
-                className="flex-1 py-3 bg-green-500 rounded-xl flex justify-center"
-              >
+              <button className="flex-1 py-3 bg-green-500 rounded-xl">
                 <FiSave />
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                title="Cancel"
-                className="px-5 bg-gray-600 rounded-xl flex items-center justify-center"
+                className="px-5 bg-gray-600 rounded-xl"
               >
                 <FiX />
               </button>
@@ -240,8 +224,7 @@ const ProfilePage = () => {
               <button
                 type="button"
                 onClick={handleAvatarUpload}
-                title="Upload Avatar"
-                className="w-full py-2 bg-purple-500 rounded-xl flex justify-center"
+                className="w-full py-2 bg-purple-500 rounded-xl"
               >
                 <FiUpload />
               </button>
@@ -249,7 +232,6 @@ const ProfilePage = () => {
           </form>
         )}
 
-        {/* hidden input */}
         {isOwnProfile && (
           <input
             type="file"
@@ -264,3 +246,5 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
+
