@@ -17,6 +17,7 @@ const ChatPage = () => {
 
   const [chats, setChats] = useState([]);
   const [users, setUsers] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState({});
@@ -40,6 +41,10 @@ const ChatPage = () => {
 
     socket.emit("setup", { _id: userId });
 
+    const handleOnlineUsers = (users) => {
+      setOnlineUsers(users);
+    };
+
     const onConnected = () => console.log("Socket connected");
 
     const handleTyping = ({ chatId, userName }) => {
@@ -59,11 +64,13 @@ const ChatPage = () => {
       });
     };
 
+    socket.on("getOnlineUsers", handleOnlineUsers);
     socket.on("connected", onConnected);
     socket.on("typing", handleTyping);
     socket.on("stop_typing", handleStopTyping);
 
     return () => {
+      socket.off("getOnlineUsers", handleOnlineUsers);
       socket.off("connected", onConnected);
       socket.off("typing", handleTyping);
       socket.off("stop_typing", handleStopTyping);
@@ -95,7 +102,7 @@ const ChatPage = () => {
       const res = await API.get(`/api/messages/chat/${chatId}`);
       const data = res.data?.data;
 
-      setMessages(Array.isArray(data) ? data : []); 
+      setMessages(Array.isArray(data) ? data : []);
 
       socket.emit("join_chat", chatId);
       markAsSeen(chatId);
@@ -210,7 +217,6 @@ const ChatPage = () => {
     return () => socket.off("message_received", handleReceive);
   }, []);
 
-
   // ================= DELETE =================
 
   const toggleSelectMessage = (msg) => {
@@ -223,7 +229,7 @@ const ChatPage = () => {
         const updated = prev.filter((m) => m._id !== msg._id);
 
         if (updated.length === 0) {
-          setSelectionMode(false); 
+          setSelectionMode(false);
         }
 
         return updated;
@@ -260,7 +266,7 @@ const ChatPage = () => {
   const handleDeleteMessages = async () => {
     try {
       const ids = selectedMessages
-        .filter((m) => m.sender._id === userId) 
+        .filter((m) => m.sender._id === userId)
         .map((m) => m._id);
 
       const res = await API.patch("/api/messages/delete-many", {
@@ -278,7 +284,7 @@ const ChatPage = () => {
       );
 
       setSelectedMessages([]);
-      setSelectionMode(false); 
+      setSelectionMode(false);
     } catch (err) {
       console.error(err);
     }
@@ -309,6 +315,8 @@ const ChatPage = () => {
       (u) => u?._id?.toString() !== userId?.toString(),
     );
   }, [selectedChat, userId]);
+
+  const isOtherOnline = onlineUsers.includes(otherUser?._id);
 
   const avatarSrc = useMemo(() => {
     if (!selectedChat) return null;
@@ -342,6 +350,7 @@ const ChatPage = () => {
           typingUsers={typingUsers}
           setChats={setChats}
           onOpenGroupInfo={(groupId) => navigate(`/group/${groupId}`)}
+          onlineUsers={onlineUsers}
         />
       </motion.div>
 
@@ -361,10 +370,8 @@ const ChatPage = () => {
                 className="relative cursor-pointer"
                 onClick={() => {
                   if (selectedChat?.isGroupChat) {
-                    
                     navigate(`/group/${selectedChat._id}`);
                   } else if (otherUser?._id) {
-                    
                     navigate(`/profile/${otherUser._id}`);
                   }
                 }}
@@ -375,11 +382,10 @@ const ChatPage = () => {
                   className="w-11 h-11 rounded-full object-cover border border-slate-700 shadow-lg"
                 />
 
-               
                 {!selectedChat.isGroupChat && (
                   <span
                     className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-slate-900 ${
-                      otherUser?.isOnline ? "bg-green-500" : "bg-gray-500"
+                      isOtherOnline ? "bg-green-500" : "bg-gray-500"
                     }`}
                   />
                 )}
@@ -407,7 +413,7 @@ const ChatPage = () => {
                     </span>
                   ) : selectedChat.isGroupChat ? (
                     `${selectedChat.users?.length || 0} members`
-                  ) : otherUser?.isOnline ? (
+                  ) : isOtherOnline ? (
                     "🟢 Online"
                   ) : otherUser?.lastSeen ? (
                     `Last seen ${new Date(
@@ -424,7 +430,6 @@ const ChatPage = () => {
 
               {/* RIGHT SIDE ACTIONS */}
               <div className="ml-auto flex items-center gap-2">
-               
                 {selectionMode && selectedMessages.length > 0 && (
                   <button
                     onClick={handleDeleteMessages}
@@ -436,9 +441,7 @@ const ChatPage = () => {
               </div>
             </div>
           ) : (
-            <div className="text-slate-400 text-sm">
-              
-            </div>
+            <div className="text-slate-400 text-sm"></div>
           )}
         </motion.div>
 
@@ -472,18 +475,15 @@ const ChatPage = () => {
               ) : (
                 /* EMPTY CHAT */
                 <div className="flex flex-col md:flex-row items-center justify-center h-full text-center gap-12 px-6 relative">
-                 
                   <div className="absolute w-72 h-72 bg-indigo-500/20 blur-3xl rounded-full left-10 top-10"></div>
                   <div className="absolute w-72 h-72 bg-purple-500/20 blur-3xl rounded-full right-10 bottom-10"></div>
 
-                 
                   <motion.div
                     initial={{ opacity: 0, x: -60 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.7 }}
                     className="relative"
                   >
-                   
                     <motion.img
                       src="https://cdn.phototourl.com/free/2026-04-12-30057522-9957-4f9e-9e1d-a5f47b184e5b.png"
                       alt="empty"
@@ -496,11 +496,9 @@ const ChatPage = () => {
                       }}
                     />
 
-                   
                     <div className="absolute inset-0 rounded-full border border-indigo-500/20 blur-xl"></div>
                   </motion.div>
 
-                  
                   <div className="flex flex-col items-center md:items-start max-w-sm">
                     <motion.div
                       animate={{ scale: [1, 1.1, 1] }}
@@ -519,7 +517,6 @@ const ChatPage = () => {
                       others.
                     </p>
 
-                    
                     <div className="mt-4 space-y-1 text-xs text-slate-500">
                       <p>⚡ Send text, images & files</p>
                       <p>🟢 Real-time messaging</p>
@@ -539,11 +536,9 @@ const ChatPage = () => {
             ) : (
               /* NO CHAT SELECTED */
               <div className="flex flex-col md:flex-row items-center justify-center h-full text-center gap-12 px-6 relative">
-                
                 <div className="absolute w-72 h-72 bg-indigo-500/20 blur-3xl rounded-full left-10 top-10"></div>
                 <div className="absolute w-72 h-72 bg-pink-500/20 blur-3xl rounded-full right-10 bottom-10"></div>
 
-               
                 <div className="flex flex-col items-center md:items-start max-w-sm">
                   <motion.div
                     animate={{ rotate: [0, 8, -8, 0] }}
@@ -562,7 +557,6 @@ const ChatPage = () => {
                     in real-time.
                   </p>
 
-                  
                   <div className="mt-4 space-y-1 text-xs text-slate-500">
                     <p>💬 Chat with friends instantly</p>
                     <p>📁 Share files & media</p>
@@ -597,7 +591,6 @@ const ChatPage = () => {
                     }}
                   />
 
-                 
                   <div className="absolute inset-0 rounded-full border border-pink-500/20 blur-xl"></div>
                 </motion.div>
               </div>
@@ -623,7 +616,3 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
-
-
-
-

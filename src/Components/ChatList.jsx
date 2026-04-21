@@ -27,6 +27,7 @@ const ChatList = ({
   typingUsers = {},
   setChats,
   onOpenGroupInfo,
+  onlineUsers = [],
 }) => {
   const theme = themes.zynk;
 
@@ -257,80 +258,87 @@ const ChatList = ({
       {/* LIST */}
       <div className="flex-1 overflow-y-auto space-y-2 pr-1">
         <AnimatePresence>
-          {filtered.map((item, index) => (
-            <motion.div
-              key={item.type === "group" ? item.chat._id : item.user._id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.03 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              {item.type === "group" ? (
-                <div
-                  onClick={() => onSelectChat(item.chat)}
-                  onDoubleClick={() => onOpenGroupInfo?.(item.chat._id)}
-                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/5"
-                >
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white">
-                    <FiUsers />
-                  </div>
+          {filtered.map((item, index) => {
+            const isOnline =
+              item.type === "user" && onlineUsers.includes(item.user?._id);
 
-                  <div className="flex-1">
-                    <p className="text-white font-medium">
-                      {item.chat.chatName}
-                    </p>
-                    <p className="text-xs text-slate-400 truncate">
-                      {formatLastMessage(item.chat)}
-                    </p>
-                  </div>
-
-                  {/* UNREAD BADGE */}
-                  {item.chat.unreadCount > 0 && (
-                    <div className="bg-indigo-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
-                      {item.chat.unreadCount}
+            return (
+              <motion.div
+                key={item.type === "group" ? item.chat._id : item.user._id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.03 }}
+                whileHover={{ scale: 1.02 }}
+              >
+                {item.type === "group" ? (
+                  <div
+                    onClick={() => onSelectChat(item.chat)}
+                    onDoubleClick={() => onOpenGroupInfo?.(item.chat._id)}
+                    className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/5"
+                  >
+                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white">
+                      <FiUsers />
                     </div>
-                  )}
-                </div>
-              ) : (
-                <div
-                  onClick={() => handleClick(item)}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer"
-                >
-                  <motion.div whileHover={{ scale: 1.05 }} className="relative">
-                    <img
-                      src={
-                        item.user.avatar?.url ||
-                        `https://ui-avatars.com/api/?name=${item.user.name}`
-                      }
-                      alt="avatar"
-                      className="w-10 h-10 rounded-full object-cover border border-slate-700 shadow-md"
-                    />
 
-                    {/* ONLINE */}
-                    {user.isOnline && (
-                      <>
-                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 animate-ping"></span>
-                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-slate-900"></span>
-                      </>
+                    <div className="flex-1">
+                      <p className="text-white font-medium">
+                        {item.chat.chatName}
+                      </p>
+                      <p className="text-xs text-slate-400 truncate">
+                        {formatLastMessage(item.chat)}
+                      </p>
+                    </div>
+
+                    {item.chat.unreadCount > 0 && (
+                      <div className="bg-indigo-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                        {item.chat.unreadCount}
+                      </div>
                     )}
-                  </motion.div>
-
-                  <div className="flex-1">
-                    <p className="text-white">{item.user.name}</p>
-                    <p className="text-xs text-slate-400 truncate">
-                      {formatLastMessage(item.chat)}
-                    </p>
                   </div>
-                  {/*UNREAD BADGE */}
-                  {item.chat?.unreadCount > 0 && (
-                    <div className="bg-indigo-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
-                      {item.chat.unreadCount}
+                ) : (
+                  <div
+                    onClick={() => handleClick(item)}
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer"
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="relative"
+                    >
+                      <img
+                        src={
+                          item.user.avatar?.url ||
+                          `https://ui-avatars.com/api/?name=${item.user.name}`
+                        }
+                        alt="avatar"
+                        className="w-10 h-10 rounded-full object-cover border border-slate-700 shadow-md"
+                      />
+
+                      {/* ✅ ONLINE FIX */}
+                      {isOnline && (
+                        <>
+                          <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 animate-ping"></span>
+                          <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-slate-900"></span>
+                        </>
+                      )}
+                    </motion.div>
+
+                    <div className="flex-1">
+                      <p className="text-white">{item.user.name}</p>
+                      <p className="text-xs text-slate-400 truncate">
+                        {formatLastMessage(item.chat)}
+                      </p>
                     </div>
-                  )}
-                </div>
-              )}
-            </motion.div>
-          ))}
+
+                    {item.chat?.unreadCount > 0 && (
+                      <div className="bg-indigo-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                        {item.chat.unreadCount}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
       </div>
 
