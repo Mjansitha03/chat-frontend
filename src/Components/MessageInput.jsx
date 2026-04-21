@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import themes from "../Utils/themes";
-import { socket } from "../Services/socket";
+import { socket } from "../Services/Socket.js";
 import { API } from "../Services/Api";
 import { FiPaperclip, FiSend } from "react-icons/fi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";

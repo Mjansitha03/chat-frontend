@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { API } from "../Services/Api";
-import { socket } from "../Services/socket";
+import { socket } from "../Services/Socket.js";
 import { useSelector } from "react-redux";
 import themes from "../Utils/themes";
 import { motion, AnimatePresence } from "framer-motion";
