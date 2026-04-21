@@ -98,8 +98,7 @@ chat-frontend/
 
 Environment variables needed (set in Vercel):
 ```
-VITE_API_URL=https://your-backend-api.com/api
-VITE_SOCKET_URL=https://your-socket-server.com
+VITE_API_URL=https://chat-backend-nvpz.onrender.com
 ```
 
 ## 🔌 Backend Requirements
