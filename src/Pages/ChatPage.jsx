@@ -356,7 +356,7 @@ const ChatPage = () => {
   w-full md:w-1/4 lg:w-1/4
   h-full
   border-r border-slate-800 backdrop-blur-xl
-  transition-all duration-300 overflow-hidden md:overflow-auto
+  transition-all duration-300 
 `}
       >
         <ChatList
