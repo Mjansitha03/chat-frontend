@@ -2,7 +2,14 @@ import React from "react";
 import themes from "../Utils/themes";
 import { FiFile, FiImage, FiVideo, FiMusic } from "react-icons/fi";
 
-const MessageBubble = ({ message, isOwn, onSelect, isSelected, selectionMode, onClick }) => {
+const MessageBubble = ({
+  message,
+  isOwn,
+  onSelect,
+  isSelected,
+  selectionMode,
+  onClick,
+}) => {
   const theme = themes.zynk;
 
   if (!message) return null;
@@ -42,39 +49,40 @@ const MessageBubble = ({ message, isOwn, onSelect, isSelected, selectionMode, on
         }
       }}
       onContextMenu={(e) => {
-        e.preventDefault(); 
-        onSelect && onSelect(message); 
+        e.preventDefault();
+        onSelect && onSelect(message);
       }}
-      className={`flex w-full ${
+      className={`flex w-full px-2 sm:px-3 ${
         isOwn ? "justify-end" : "justify-start"
       } animate-messageIn`}
     >
       <div
         className={`
-          relative max-w-[75%] rounded-2xl break-words
-          backdrop-blur-lg border border-white/5
-          shadow-lg transition-all duration-300
-          hover:scale-[1.02]
+      relative w-fit max-w-[85%] sm:max-w-[75%] md:max-w-[70%]
+      rounded-2xl break-words
+      backdrop-blur-lg border border-white/5
+      shadow-lg transition-all duration-300
+      hover:scale-[1.01] sm:hover:scale-[1.02]
 
-          ${isSelected ? "ring-2 ring-red-500 scale-[1.02]" : ""}
+      ${isSelected ? "ring-2 ring-red-500 scale-[1.02]" : ""}
 
-          ${
-            isOwn
-              ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-br-sm shadow-indigo-500/30"
-              : "bg-slate-800/80 text-slate-200 rounded-bl-sm shadow-black/30"
-          }
-        `}
+      ${
+        isOwn
+          ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-br-sm shadow-indigo-500/30"
+          : "bg-slate-800/80 text-slate-200 rounded-bl-sm shadow-black/30"
+      }
+    `}
       >
         <div className="absolute inset-0 rounded-2xl opacity-0 hover:opacity-100 transition bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur-xl" />
 
         {/* ================= TEXT ================= */}
         {isDeleted ? (
-          <p className="text-sm italic text-gray-400 px-4 py-2">
+          <p className="text-xs sm:text-sm italic text-gray-400 px-3 sm:px-4 py-2">
             This message was deleted
           </p>
         ) : (
           content && (
-            <p className="text-sm mb-1 leading-relaxed relative z-10  px-4 py-2">
+            <p className="text-xs sm:text-sm mb-1 leading-relaxed relative z-10 px-3 sm:px-4 py-2 break-words">
               {content}
             </p>
           )
@@ -82,11 +90,11 @@ const MessageBubble = ({ message, isOwn, onSelect, isSelected, selectionMode, on
 
         {/* ================= IMAGE ================= */}
         {messageType === "image" && fileUrl && !isDeleted && (
-          <div className="mt-2 overflow-hidden rounded-xl relative group  px-2 py-0.5">
+          <div className="mt-2 overflow-hidden rounded-xl relative group px-2 sm:px-2 py-0.5">
             <img
               src={fileUrl}
               alt="image"
-              className="max-h-60 w-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
+              className="max-h-48 sm:max-h-60 w-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition" />
           </div>
@@ -95,7 +103,7 @@ const MessageBubble = ({ message, isOwn, onSelect, isSelected, selectionMode, on
         {/* ================= VIDEO ================= */}
         {messageType === "video" && fileUrl && !isDeleted && (
           <div className="mt-2 rounded-xl overflow-hidden px-2 py-0.5">
-            <video controls className="max-h-60 w-full rounded-xl">
+            <video controls className="max-h-48 sm:max-h-60 w-full rounded-xl">
               <source src={fileUrl} />
             </video>
           </div>
@@ -116,28 +124,32 @@ const MessageBubble = ({ message, isOwn, onSelect, isSelected, selectionMode, on
             href={fileUrl}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-3 mt-3 p-3 rounded-xl bg-slate-900/60 hover:bg-slate-900 transition group"
+            className="flex items-center gap-2 sm:gap-3 mt-3 p-2 sm:p-3 rounded-xl bg-slate-900/60 hover:bg-slate-900 transition group"
           >
             {/* ICON */}
-            <div className="text-xl text-indigo-400">{getFileIcon()}</div>
-
-            {/* INFO */}
-            <div className="flex-1">
-              <p className="text-sm font-medium truncate">
-                {fileName || "File"}
-              </p>
-              <p className="text-xs text-slate-400">Click to open</p>
+            <div className="text-lg sm:text-xl text-indigo-400 flex-shrink-0">
+              {getFileIcon()}
             </div>
 
-            <span className="text-xs text-indigo-400 group-hover:underline">
+            {/* INFO */}
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm font-medium truncate">
+                {fileName || "File"}
+              </p>
+              <p className="text-[10px] sm:text-xs text-slate-400">
+                Click to open
+              </p>
+            </div>
+
+            <span className="text-[10px] sm:text-xs text-indigo-400 group-hover:underline flex-shrink-0">
               Open
             </span>
           </a>
         )}
 
         {/* ================= TIME + SEEN ================= */}
-        <div className="flex justify-end items-center gap-2 mt-2 relative z-10">
-          <span className={`${theme.messageTime}`}>
+        <div className="flex justify-end items-center gap-1 sm:gap-2 mt-2 relative z-10 px-2 sm:px-0">
+          <span className={`${theme.messageTime} text-[10px] sm:text-xs`}>
             {new Date(createdAt).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
@@ -146,7 +158,7 @@ const MessageBubble = ({ message, isOwn, onSelect, isSelected, selectionMode, on
 
           {isOwn && (
             <span
-              className={`text-xs transition ${
+              className={`text-[10px] sm:text-xs transition ${
                 isSeen ? "text-blue-400" : "text-gray-400"
               }`}
             >
@@ -154,31 +166,27 @@ const MessageBubble = ({ message, isOwn, onSelect, isSelected, selectionMode, on
             </span>
           )}
         </div>
+
+        {/* ================= ANIMATION ================= */}
+        <style>{`
+      @keyframes messageIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .animate-messageIn {
+        animation: messageIn 0.3s ease forwards;
+      }
+    `}</style>
       </div>
-
-      {/* ================= ANIMATION ================= */}
-      <style>{`
-        @keyframes messageIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-
-        .animate-messageIn {
-          animation: messageIn 0.3s ease forwards;
-        }
-      `}</style>
     </div>
   );
 };
 
 export default MessageBubble;
-
-
-
-  
