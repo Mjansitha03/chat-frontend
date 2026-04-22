@@ -356,7 +356,7 @@ const ChatPage = () => {
   w-full md:w-1/4 lg:w-1/4
   h-full
   border-r border-slate-800 backdrop-blur-xl
-  transition-all duration-300
+  transition-all duration-300 overflow-hidden md:overflow-auto
 `}
       >
         <ChatList
@@ -376,7 +376,7 @@ const ChatPage = () => {
       <div
         className={`
     ${!selectedChat ? "hidden md:flex" : "flex"}
-    flex-1 flex-col h-full overflow-hidden
+    flex-1 flex-col h-full overflow-hidden h-[calc(100dvh-60px)] md:h-full
   `}
       >
         {/* HEADER */}
