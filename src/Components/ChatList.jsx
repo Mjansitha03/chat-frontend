@@ -184,18 +184,19 @@ const ChatList = ({
 
   return (
     <div
-      className={`h-full ${theme.card} p-4 flex flex-col ${theme.cardShadow}`}
+      className={`h-full w-full md:w-80 lg:w-96 flex flex-col ${theme.card} 
+    p-3 sm:p-4 md:p-4 ${theme.cardShadow} overflow-hidden`}
     >
       {/* ================= USER BAR ================= */}
       {user && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 p-3 rounded-2xl bg-white/5 border border-white/10 flex justify-between items-center"
+          className="mb-3 sm:mb-4 p-2 sm:p-3 rounded-2xl bg-white/5 border border-white/10 flex justify-between items-center"
         >
           <div
             onClick={() => navigate("/profile")}
-            className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer min-w-0"
           >
             <motion.div whileHover={{ scale: 1.05 }} className="relative">
               <img
@@ -204,21 +205,22 @@ const ChatList = ({
                   `https://ui-avatars.com/api/?name=${user.name}`
                 }
                 alt="avatar"
-                className="w-10 h-10 rounded-full object-cover border border-slate-700 shadow-md"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border border-slate-700 shadow-md"
               />
 
-              {/* ONLINE */}
               {isMeOnline && (
                 <>
-                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 animate-ping"></span>
-                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-slate-900"></span>
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 animate-ping"></span>
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 border-2 border-slate-900"></span>
                 </>
               )}
             </motion.div>
 
-            <div>
-              <p className="text-white text-sm font-semibold">{user.name}</p>
-              <p className="text-xs text-slate-400">
+            <div className="min-w-0">
+              <p className="text-white text-xs sm:text-sm font-semibold truncate">
+                {user.name}
+              </p>
+              <p className="text-[10px] sm:text-xs text-slate-400">
                 {isMeOnline ? "Online" : "Offline"}
               </p>
             </div>
@@ -228,39 +230,42 @@ const ChatList = ({
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleLogout}
-            className="p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30"
+            className="p-1.5 sm:p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30"
           >
-            <FiLogOut />
+            <FiLogOut size={16} />
           </motion.button>
         </motion.div>
       )}
 
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-white">Chats</h2>
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <h2 className="text-base sm:text-lg font-semibold text-white">Chats</h2>
 
         <button
           onClick={() => setShowGroupModal(true)}
           className="text-indigo-400 hover:scale-110 transition"
         >
-          <FiPlus size={20} />
+          <FiPlus size={18} />
         </button>
       </div>
 
       {/* SEARCH */}
-      <div className="relative mb-4">
+      <div className="relative mb-3 sm:mb-4">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search..."
-          className="w-full p-3 pl-10 rounded-xl bg-white/5 text-white border border-white/10"
+          className="w-full p-2.5 sm:p-3 pl-9 sm:pl-10 rounded-xl bg-white/5 text-white border border-white/10 text-sm sm:text-base"
         />
 
-        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <FiSearch
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+          size={14}
+        />
       </div>
 
       {/* LIST */}
-      <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+      <div className="flex-1 overflow-y-auto space-y-1.5 sm:space-y-2 pr-1">
         <AnimatePresence>
           {filtered.map((item, index) => {
             const isOnline =
@@ -275,29 +280,29 @@ const ChatList = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.03 }}
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ scale: 1.01 }}
               >
                 {item.type === "group" ? (
                   <div
                     onClick={() => onSelectChat(item.chat)}
                     onDoubleClick={() => onOpenGroupInfo?.(item.chat._id)}
-                    className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/5"
+                    className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl cursor-pointer hover:bg-white/5"
                   >
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white">
-                      <FiUsers />
+                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white">
+                      <FiUsers size={18} />
                     </div>
 
-                    <div className="flex-1">
-                      <p className="text-white font-medium">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-medium text-sm sm:text-base truncate">
                         {item.chat.chatName}
                       </p>
-                      <p className="text-xs text-slate-400 truncate">
+                      <p className="text-[11px] sm:text-xs text-slate-400 truncate">
                         {formatLastMessage(item.chat)}
                       </p>
                     </div>
 
                     {item.chat.unreadCount > 0 && (
-                      <div className="bg-indigo-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                      <div className="bg-indigo-500 text-white text-[10px] sm:text-xs px-2 py-1 rounded-full min-w-[18px] text-center">
                         {item.chat.unreadCount}
                       </div>
                     )}
@@ -305,7 +310,7 @@ const ChatList = ({
                 ) : (
                   <div
                     onClick={() => handleClick(item)}
-                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer"
+                    className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl hover:bg-white/5 cursor-pointer"
                   >
                     <motion.div
                       whileHover={{ scale: 1.05 }}
@@ -317,27 +322,28 @@ const ChatList = ({
                           `https://ui-avatars.com/api/?name=${item.user.name}`
                         }
                         alt="avatar"
-                        className="w-10 h-10 rounded-full object-cover border border-slate-700 shadow-md"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border border-slate-700 shadow-md"
                       />
 
-                      {/* ✅ ONLINE FIX */}
                       {isOnline && (
                         <>
-                          <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 animate-ping"></span>
-                          <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-slate-900"></span>
+                          <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 animate-ping"></span>
+                          <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 border-2 border-slate-900"></span>
                         </>
                       )}
                     </motion.div>
 
-                    <div className="flex-1">
-                      <p className="text-white">{item.user.name}</p>
-                      <p className="text-xs text-slate-400 truncate">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-sm sm:text-base truncate">
+                        {item.user.name}
+                      </p>
+                      <p className="text-[11px] sm:text-xs text-slate-400 truncate">
                         {formatLastMessage(item.chat)}
                       </p>
                     </div>
 
                     {item.chat?.unreadCount > 0 && (
-                      <div className="bg-indigo-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                      <div className="bg-indigo-500 text-white text-[10px] sm:text-xs px-2 py-1 rounded-full min-w-[18px] text-center">
                         {item.chat.unreadCount}
                       </div>
                     )}
