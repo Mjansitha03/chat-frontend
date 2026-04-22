@@ -343,308 +343,151 @@ const ChatPage = () => {
 
   // ================= UI =================
   return (
-    <div className={`h-screen flex flex-col md:flex-row ${theme.pageGradient}`}>
-      {/* LEFT */}
-      <motion.div
-        initial={{ x: -50, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        className={`
-  ${selectedChat ? "hidden md:flex" : "flex"}
-  flex-col
-  w-full md:w-[320px] lg:w-[360px]
-  h-screen
-  border-r border-slate-800
-  bg-slate-950/40 backdrop-blur-xl
-  transition-all duration-300
-`}
-      >
-        <ChatList
-          chats={chats}
-          users={users}
-          user={user}
-          selectedChat={selectedChat}
-          onSelectChat={setSelectedChat}
-          typingUsers={typingUsers}
-          setChats={setChats}
-          onOpenGroupInfo={(groupId) => navigate(`/group/${groupId}`)}
-          onlineUsers={onlineUsers}
-        />
-      </motion.div>
-
-      {/* RIGHT */}
-      <div
-        className={`
-    ${!selectedChat ? "hidden md:flex" : "flex"}
-    flex-1 flex flex-col h-screen md:h-screen
-  `}
-      >
-        {/* HEADER */}
+    <div className={`h-screen ${theme.pageGradient}`}>
+      {/* APP CONTAINER */}
+      <div className="h-full max-w-[1400px] mx-auto flex relative">
+        {/* LEFT SIDEBAR */}
         <motion.div
-          initial={{ y: -30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="px-3 sm:px-4 py-2 sm:py-3 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md flex items-center"
+          initial={{ x: -40, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          className={`
+          ${selectedChat ? "hidden md:flex" : "flex"}
+          flex-col
+          w-full md:w-[300px] lg:w-[340px] xl:w-[360px]
+          h-full
+          border-r border-slate-800
+          bg-slate-950/40 backdrop-blur-xl
+        `}
         >
-          {selectedChat ? (
-            <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
-              {/* 🔙 BACK BUTTON (MOBILE ONLY) */}
-              {selectedChat && (
-                <button
-                  onClick={() => setSelectedChat(null)}
-                  className="md:hidden mr-1 text-white text-lg"
-                >
-                  <FiArrowLeft size={20} />
-                </button>
-              )}
-
-              {/* AVATAR */}
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="relative cursor-pointer flex-shrink-0"
-                onClick={() => {
-                  if (selectedChat?.isGroupChat) {
-                    navigate(`/group/${selectedChat._id}`);
-                  } else if (otherUser?._id) {
-                    navigate(`/profile/${otherUser._id}`);
-                  }
-                }}
-              >
-                <img
-                  src={avatarSrc}
-                  alt="avatar"
-                  className="w-9 h-9 sm:w-10 sm:h-11 rounded-full object-cover border border-slate-700 shadow-lg"
-                />
-
-                {!selectedChat.isGroupChat && (
-                  <span
-                    className={`absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border-2 border-slate-900 ${
-                      isOtherOnline ? "bg-green-500" : "bg-gray-500"
-                    }`}
-                  />
-                )}
-              </motion.div>
-
-              {/* CHAT INFO */}
-              <div
-                className="cursor-pointer min-w-0 flex-1"
-                onClick={() => {
-                  if (selectedChat?.isGroupChat) {
-                    navigate(`/group/${selectedChat._id}`);
-                  }
-                }}
-              >
-                <h2 className="text-white font-semibold text-sm sm:text-base lg:text-lg truncate">
-                  {selectedChat.isGroupChat
-                    ? selectedChat.chatName
-                    : otherUser?.name}
-                </h2>
-
-                <p className="text-[11px] sm:text-xs text-slate-400 truncate">
-                  {typingUsers[selectedChat?._id] ? (
-                    <span className="text-indigo-400 animate-pulse">
-                      ✍️ {typingUsers[selectedChat._id]} is typing...
-                    </span>
-                  ) : selectedChat.isGroupChat ? (
-                    `${selectedChat.users?.length || 0} members`
-                  ) : isOtherOnline ? (
-                    "🟢 Online"
-                  ) : otherUser?.lastSeen ? (
-                    `Last seen ${new Date(
-                      otherUser.lastSeen,
-                    ).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}`
-                  ) : (
-                    "Offline"
-                  )}
-                </p>
-              </div>
-
-              {/* RIGHT SIDE ACTIONS */}
-              <div className="ml-auto flex items-center gap-1 sm:gap-2 flex-shrink-0">
-                {selectionMode && selectedMessages.length > 0 && (
-                  <button
-                    onClick={handleDeleteMessages}
-                    className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-2 sm:px-3 py-1 rounded-lg text-[10px] sm:text-sm"
-                  >
-                    <FiTrash2 size={14} />
-                    <span>({selectedMessages.length})</span>
-                  </button>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="text-slate-400 text-sm"></div>
-          )}
+          <ChatList
+            chats={chats}
+            users={users}
+            user={user}
+            selectedChat={selectedChat}
+            onSelectChat={setSelectedChat}
+            typingUsers={typingUsers}
+            setChats={setChats}
+            onOpenGroupInfo={(groupId) => navigate(`/group/${groupId}`)}
+            onlineUsers={onlineUsers}
+          />
         </motion.div>
 
-        {/* MESSAGES */}
-        <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-3 space-y-3 scroll-smooth">
-          <AnimatePresence>
-            {selectedChat ? (
-              Array.isArray(messages) && messages.length > 0 ? (
-                messages.map((msg) => (
-                  <motion.div
-                    key={msg._id}
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25 }}
+        {/* RIGHT CHAT AREA */}
+        <div
+          className={`
+          ${!selectedChat ? "hidden md:flex" : "flex"}
+          flex-1 flex flex-col h-full
+        `}
+        >
+          {/* HEADER */}
+          <div className="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md">
+            <div className="max-w-[900px] mx-auto px-3 sm:px-4 py-3 flex items-center">
+              {selectedChat && (
+                <>
+                  {/* BACK BUTTON */}
+                  <button
+                    onClick={() => setSelectedChat(null)}
+                    className="md:hidden mr-2 text-white"
                   >
+                    <FiArrowLeft size={20} />
+                  </button>
+
+                  {/* AVATAR */}
+                  <div className="relative mr-3">
+                    <img
+                      src={avatarSrc}
+                      className="w-10 h-10 rounded-full object-cover border border-slate-700"
+                    />
+                    {!selectedChat.isGroupChat && (
+                      <span
+                        className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-slate-900 ${
+                          isOtherOnline ? "bg-green-500" : "bg-gray-500"
+                        }`}
+                      />
+                    )}
+                  </div>
+
+                  {/* INFO */}
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-white font-semibold truncate">
+                      {selectedChat.isGroupChat
+                        ? selectedChat.chatName
+                        : otherUser?.name}
+                    </h2>
+
+                    <p className="text-xs text-slate-400 truncate">
+                      {typingUsers[selectedChat?._id]
+                        ? `✍️ ${typingUsers[selectedChat._id]} typing...`
+                        : isOtherOnline
+                          ? "🟢 Online"
+                          : "Offline"}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* MESSAGES */}
+          <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-3">
+            <div className="max-w-[900px] mx-auto space-y-3">
+              {selectedChat ? (
+                messages?.length > 0 ? (
+                  messages.map((msg) => (
                     <MessageBubble
+                      key={msg._id}
                       message={msg}
                       isOwn={
                         msg?.sender?._id?.toString() === userId?.toString()
                       }
-                      onSelect={toggleSelectMessage}
-                      onClick={handleMessageClick}
-                      isSelected={selectedMessages.some(
-                        (m) => m._id === msg._id,
-                      )}
-                      selectionMode={selectionMode}
                     />
-                  </motion.div>
-                ))
-              ) : (
-                /* EMPTY CHAT */
-                <div className="flex flex-col md:flex-row items-center justify-center h-full min-h-[60vh] text-center md:text-left gap-6 md:gap-12 px-4 sm:px-6 relative overflow-hidden">
-                  <div className="absolute w-72 h-72 bg-indigo-500/20 blur-3xl rounded-full left-10 top-10"></div>
-                  <div className="absolute w-72 h-72 bg-purple-500/20 blur-3xl rounded-full right-10 bottom-10"></div>
-
-                  <motion.div
-                    initial={{ opacity: 0, x: -60 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.7 }}
-                    className="relative"
-                  >
-                    <motion.img
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-center py-10">
+                    <img
                       src="https://cdn.phototourl.com/free/2026-04-12-30057522-9957-4f9e-9e1d-a5f47b184e5b.png"
-                      alt="empty"
-                      className="w-64 md:w-80 drop-shadow-2xl relative z-10"
-                      animate={{ y: [0, -15, 0] }}
-                      transition={{
-                        repeat: Infinity,
-                        duration: 4,
-                        ease: "easeInOut",
-                      }}
+                      className="w-52 md:w-72 mb-4"
                     />
-
-                    <div className="absolute inset-0 rounded-full border border-indigo-500/20 blur-xl"></div>
-                  </motion.div>
-
-                  <div className="flex flex-col items-center md:items-start max-w-sm">
-                    <motion.div
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                      className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-3xl shadow-xl"
-                    >
-                      💬
-                    </motion.div>
-
-                    <h2 className="mt-6 text-2xl font-bold text-white">
+                    <h2 className="text-white text-xl font-semibold">
                       No messages yet
                     </h2>
-
-                    <p className="text-slate-400 text-sm mt-2 leading-relaxed">
-                      Start your conversation now and connect instantly with
-                      others.
+                    <p className="text-slate-400 text-sm">
+                      Start the conversation 🚀
                     </p>
-
-                    <div className="mt-4 space-y-1 text-xs text-slate-500">
-                      <p>⚡ Send text, images & files</p>
-                      <p>🟢 Real-time messaging</p>
-                      <p>🔔 Instant notifications</p>
-                    </div>
-
-                    <motion.div
-                      animate={{ scale: [1, 1.05, 1] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                      className="mt-6 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-sm backdrop-blur-md"
-                    >
-                      🚀 Send your first message
-                    </motion.div>
                   </div>
-                </div>
-              )
-            ) : (
-              /* NO CHAT SELECTED */
-              <div className="flex flex-col md:flex-row items-center justify-center h-full min-h-[60vh] text-center md:text-left gap-6 md:gap-12 px-4 sm:px-6 relative overflow-hidden">
-                <div className="absolute w-40 sm:w-60 md:w-72 h-40 sm:h-60 md:h-72 bg-indigo-500/20 blur-3xl rounded-full left-0 sm:left-10 top-0 sm:top-10"></div>
-                <div className="absolute w-40 sm:w-60 md:w-72 h-40 sm:h-60 md:h-72 bg-pink-500/20 blur-3xl rounded-full right-0 sm:right-10 bottom-0 sm:bottom-10"></div>
-
-                <div className="flex flex-col items-center md:items-start max-w-sm w-full z-10">
-                  <motion.div
-                    animate={{ rotate: [0, 8, -8, 0] }}
-                    transition={{ repeat: Infinity, duration: 4 }}
-                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-3xl sm:text-4xl shadow-2xl"
-                  >
-                    👋
-                  </motion.div>
-
-                  <h1 className="mt-5 sm:mt-6 text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
-                    Welcome to Zynk Chat
+                )
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-center py-10">
+                  <h1 className="text-2xl font-bold text-white">
+                    Welcome to Chat 👋
                   </h1>
-
-                  <p className="text-slate-400 mt-3 text-xs sm:text-sm leading-relaxed">
-                    Select a conversation or start a new one to begin chatting
-                    in real-time.
+                  <p className="text-slate-400 mt-2">
+                    Select a chat to start messaging
                   </p>
-
-                  <div className="mt-4 space-y-1 text-[11px] sm:text-xs text-slate-500">
-                    <p>💬 Chat with friends instantly</p>
-                    <p>📁 Share files & media</p>
-                    <p>👥 Create group conversations</p>
-                  </div>
-
-                  <motion.div
-                    animate={{ scale: [1, 1.05, 1] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="mt-5 sm:mt-6 px-3 sm:px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs sm:text-sm backdrop-blur-md"
-                  >
-                    👈 Choose a chat to start
-                  </motion.div>
                 </div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: 60 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.7 }}
-                  className="relative z-10 mt-6 md:mt-0"
-                >
-                  <motion.img
-                    src="https://cdn.phototourl.com/free/2026-04-12-30057522-9957-4f9e-9e1d-a5f47b184e5b.png"
-                    alt="welcome"
-                    className="w-44 sm:w-56 md:w-72 lg:w-80 mx-auto drop-shadow-2xl"
-                    animate={{ y: [0, -15, 0] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 5,
-                      ease: "easeInOut",
-                    }}
-                  />
-
-                  <div className="absolute inset-0 rounded-full border border-pink-500/20 blur-xl"></div>
-                </motion.div>
-              </div>
-            )}
-          </AnimatePresence>
-
-          <div ref={bottomRef} />
-        </div>
-
-        {/* INPUT */}
-        {selectedChat?._id && (
-          <div className="p-2 sm:p-3 border-t border-slate-800 bg-slate-900/60 backdrop-blur-md">
-            <MessageInput
-              onSend={handleSend}
-              selectedChat={selectedChat}
-              user={user}
-            />
+              )}
+            </div>
           </div>
-        )}
+
+          {/* INPUT */}
+          {selectedChat && (
+            <div className="border-t border-slate-800 bg-slate-900/60 backdrop-blur-md">
+              <div className="max-w-[900px] mx-auto px-3 sm:px-4 py-2">
+                <MessageInput
+                  onSend={handleSend}
+                  selectedChat={selectedChat}
+                  user={user}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 export default ChatPage;
+
+
+
