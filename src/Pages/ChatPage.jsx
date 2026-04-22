@@ -351,9 +351,9 @@ const ChatPage = () => {
           initial={{ x: -40, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           className={`
-          ${selectedChat ? "hidden md:flex" : "flex"}
+          ${selectedChat ? "hidden sm:flex" : "flex"}
           flex-col
-          w-full md:w-[300px] lg:w-[380px] xl:w-[480px]
+          w-full md:w-[350px] lg:w-[380px] xl:w-[400px]
           flex-shrink-0
           h-full
           border-r border-slate-800
@@ -376,7 +376,7 @@ const ChatPage = () => {
         {/* RIGHT CHAT AREA */}
         <div
           className={`
-    ${!selectedChat ? "hidden md:flex" : "flex"}
+    ${!selectedChat ? "hidden sm:flex" : "flex"}
     flex-1 min-w-0 flex flex-col h-full
   `}
         >
@@ -388,7 +388,7 @@ const ChatPage = () => {
                   {/* BACK BUTTON */}
                   <button
                     onClick={() => setSelectedChat(null)}
-                    className="md:hidden mr-2 text-white"
+                    className="sm:hidden mr-2 text-white"
                   >
                     <FiArrowLeft size={20} />
                   </button>
