@@ -9,7 +9,7 @@ import ChatList from "../Components/ChatList";
 import MessageBubble from "../Components/MessageBubble";
 import MessageInput from "../Components/MessageInput";
 import { useNavigate } from "react-router-dom";
-import { FiTrash2 } from "react-icons/fi";
+import { FiArrowLeft, FiTrash2 } from "react-icons/fi";
 
 const ChatPage = () => {
   const theme = themes.zynk;
@@ -350,11 +350,14 @@ const ChatPage = () => {
       <motion.div
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="
-         w-full md:w-1/4 lg:w-1/4
-         h-[60px] md:h-full
-         border-b md:border-b-0 md:border-r border-slate-800 backdrop-blur-xl
-         overflow-hidden md:overflow-auto"
+        className={`
+  ${selectedChat ? "hidden md:flex" : "flex"}
+  flex-col
+  w-full md:w-1/4 lg:w-1/4
+  h-full
+  border-r border-slate-800 backdrop-blur-xl
+  transition-all duration-300
+`}
       >
         <ChatList
           chats={chats}
@@ -370,7 +373,12 @@ const ChatPage = () => {
       </motion.div>
 
       {/* RIGHT */}
-      <div className="flex-1 flex flex-col h-[calc(100dvh-60px)] md:h-full overflow-hidden">
+      <div
+        className={`
+    ${!selectedChat ? "hidden md:flex" : "flex"}
+    flex-1 flex-col h-full overflow-hidden
+  `}
+      >
         {/* HEADER */}
         <motion.div
           initial={{ y: -30, opacity: 0 }}
@@ -379,6 +387,16 @@ const ChatPage = () => {
         >
           {selectedChat ? (
             <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
+              {/* 🔙 BACK BUTTON (MOBILE ONLY) */}
+              {selectedChat && (
+                <button
+                  onClick={() => setSelectedChat(null)}
+                  className="md:hidden mr-1 text-white text-lg"
+                >
+                  <FiArrowLeft size={20} />
+                </button>
+              )}
+
               {/* AVATAR */}
               <motion.div
                 whileHover={{ scale: 1.1 }}
