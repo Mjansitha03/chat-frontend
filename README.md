@@ -40,7 +40,7 @@ ChatBox is a modern, responsive real-time chat application frontend built with t
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/Mjansitha03/chat-frontend.git
    cd chat-frontend
    ```
 

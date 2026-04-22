@@ -343,9 +343,7 @@ const ChatPage = () => {
 
   // ================= UI =================
   return (
-    <div
-      className={`h-[100dvh] flex flex-col md:flex-row ${theme.pageGradient} overflow-hidden`}
-    >
+    <div className={`h-screen flex flex-col md:flex-row ${theme.pageGradient}`}>
       {/* LEFT */}
       <motion.div
         initial={{ x: -50, opacity: 0 }}
@@ -353,10 +351,11 @@ const ChatPage = () => {
         className={`
   ${selectedChat ? "hidden md:flex" : "flex"}
   flex-col
-  w-full md:w-1/3
-  h-full
-  border-r border-slate-800 backdrop-blur-xl
-  transition-all duration-300 
+  w-full md:w-[320px] lg:w-[360px]
+  h-screen
+  border-r border-slate-800
+  bg-slate-950/40 backdrop-blur-xl
+  transition-all duration-300
 `}
       >
         <ChatList
@@ -376,14 +375,14 @@ const ChatPage = () => {
       <div
         className={`
     ${!selectedChat ? "hidden md:flex" : "flex"}
-    flex-1 flex-col h-full overflow-hidden h-[calc(100dvh-60px)] md:h-full
+    flex-1 flex flex-col h-screen md:h-screen
   `}
       >
         {/* HEADER */}
         <motion.div
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="p-3 sm:p-4 border-b border-slate-800 bg-slate-900/40 flex items-center justify-between"
+          className="px-3 sm:px-4 py-2 sm:py-3 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md flex items-center"
         >
           {selectedChat ? (
             <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
@@ -480,7 +479,7 @@ const ChatPage = () => {
         </motion.div>
 
         {/* MESSAGES */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 min-h-0">
+        <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-3 space-y-3 scroll-smooth">
           <AnimatePresence>
             {selectedChat ? (
               Array.isArray(messages) && messages.length > 0 ? (
@@ -635,7 +634,7 @@ const ChatPage = () => {
 
         {/* INPUT */}
         {selectedChat?._id && (
-          <div className="p-3 border-t border-slate-800 bg-slate-900/40">
+          <div className="p-2 sm:p-3 border-t border-slate-800 bg-slate-900/60 backdrop-blur-md">
             <MessageInput
               onSend={handleSend}
               selectedChat={selectedChat}
