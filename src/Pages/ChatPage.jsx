@@ -345,7 +345,7 @@ const ChatPage = () => {
   return (
     <div className={`h-screen ${theme.pageGradient}`}>
       {/* APP CONTAINER */}
-      <div className="h-full max-w-[1400px] mx-auto flex relative">
+      <div className="h-full max-w-[1000px] mx-auto flex relative">
         {/* LEFT SIDEBAR */}
         <motion.div
           initial={{ x: -40, opacity: 0 }}
