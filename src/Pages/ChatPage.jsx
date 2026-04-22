@@ -345,7 +345,7 @@ const ChatPage = () => {
   return (
     <div className={`h-screen ${theme.pageGradient}`}>
       {/* APP CONTAINER */}
-      <div className="h-full w-full flex relative">
+      <div className="h-full w-full flex relative overflow-hidden">
         {/* LEFT SIDEBAR */}
         <motion.div
           initial={{ x: -40, opacity: 0 }}
@@ -375,9 +375,9 @@ const ChatPage = () => {
         {/* RIGHT CHAT AREA */}
         <div
           className={`
-          ${!selectedChat ? "hidden md:flex" : "flex"}
-          flex-1 flex flex-col h-full
-        `}
+    ${!selectedChat ? "hidden md:flex" : "flex"}
+    flex-1 min-w-0 flex flex-col h-full
+  `}
         >
           {/* HEADER */}
           <div className="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md">
@@ -429,7 +429,7 @@ const ChatPage = () => {
           </div>
 
           {/* MESSAGES */}
-          <div className="flex-1 overflow-y-auto px-1 sm:px-4 py-3">
+          <div className="flex-1 min-w-0 overflow-y-auto px-1 sm:px-4 py-3">
             <div className="w-full space-y-3">
               {selectedChat ? (
                 messages?.length > 0 ? (
