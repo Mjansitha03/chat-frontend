@@ -343,12 +343,18 @@ const ChatPage = () => {
 
   // ================= UI =================
   return (
-    <div className={`h-screen flex ${theme.pageGradient}`}>
+    <div
+      className={`h-[100dvh] flex flex-col md:flex-row ${theme.pageGradient} overflow-hidden`}
+    >
       {/* LEFT */}
       <motion.div
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="w-1/4 border-r border-slate-800 backdrop-blur-xl"
+        className="
+         w-full md:w-1/4 lg:w-1/4
+         h-[60px] md:h-full
+         border-b md:border-b-0 md:border-r border-slate-800 backdrop-blur-xl
+         overflow-hidden md:overflow-auto"
       >
         <ChatList
           chats={chats}
@@ -364,7 +370,7 @@ const ChatPage = () => {
       </motion.div>
 
       {/* RIGHT */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col h-[calc(100dvh-60px)] md:h-full overflow-hidden">
         {/* HEADER */}
         <motion.div
           initial={{ y: -30, opacity: 0 }}
@@ -456,7 +462,7 @@ const ChatPage = () => {
         </motion.div>
 
         {/* MESSAGES */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-2">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 min-h-0">
           <AnimatePresence>
             {selectedChat ? (
               Array.isArray(messages) && messages.length > 0 ? (
@@ -484,7 +490,7 @@ const ChatPage = () => {
                 ))
               ) : (
                 /* EMPTY CHAT */
-                <div className="flex flex-col md:flex-row items-center justify-center h-full text-center gap-12 px-6 relative">
+                <div className="flex flex-col md:flex-row items-center justify-center h-full min-h-[60vh] text-center md:text-left gap-6 md:gap-12 px-4 sm:px-6 relative overflow-hidden">
                   <div className="absolute w-72 h-72 bg-indigo-500/20 blur-3xl rounded-full left-10 top-10"></div>
                   <div className="absolute w-72 h-72 bg-purple-500/20 blur-3xl rounded-full right-10 bottom-10"></div>
 
@@ -545,7 +551,7 @@ const ChatPage = () => {
               )
             ) : (
               /* NO CHAT SELECTED */
-              <div className="flex flex-col md:flex-row items-center justify-center min-h-full text-center md:text-left gap-6 md:gap-12 px-4 sm:px-6 relative overflow-hidden">
+              <div className="flex flex-col md:flex-row items-center justify-center h-full min-h-[60vh] text-center md:text-left gap-6 md:gap-12 px-4 sm:px-6 relative overflow-hidden">
                 <div className="absolute w-40 sm:w-60 md:w-72 h-40 sm:h-60 md:h-72 bg-indigo-500/20 blur-3xl rounded-full left-0 sm:left-10 top-0 sm:top-10"></div>
                 <div className="absolute w-40 sm:w-60 md:w-72 h-40 sm:h-60 md:h-72 bg-pink-500/20 blur-3xl rounded-full right-0 sm:right-10 bottom-0 sm:bottom-10"></div>
 
