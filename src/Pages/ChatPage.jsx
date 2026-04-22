@@ -353,7 +353,8 @@ const ChatPage = () => {
           className={`
           ${selectedChat ? "hidden md:flex" : "flex"}
           flex-col
-          w-full 
+          w-full md:w-[300px] lg:w-[340px] xl:w-[360px]
+          flex-shrink-0
           h-full
           border-r border-slate-800
           bg-slate-950/40 backdrop-blur-xl
