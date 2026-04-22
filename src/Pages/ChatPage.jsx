@@ -381,7 +381,7 @@ const ChatPage = () => {
         >
           {/* HEADER */}
           <div className="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md">
-            <div className="max-w-[900px] mx-auto px-3 sm:px-4 py-3 flex items-center">
+            <div className="max-w-[800px] mx-auto px-3 sm:px-4 py-3 flex items-center">
               {selectedChat && (
                 <>
                   {/* BACK BUTTON */}
@@ -444,26 +444,95 @@ const ChatPage = () => {
                   ))
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-center py-10">
-                    <img
-                      src="https://cdn.phototourl.com/free/2026-04-12-30057522-9957-4f9e-9e1d-a5f47b184e5b.png"
-                      className="w-52 md:w-72 mb-4"
-                    />
-                    <h2 className="text-white text-xl font-semibold">
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-3xl shadow-xl"
+                    >
+                      💬
+                    </motion.div>
+
+                    <h2 className="mt-6 text-2xl font-bold text-white">
                       No messages yet
                     </h2>
-                    <p className="text-slate-400 text-sm">
-                      Start the conversation 🚀
+
+                    <p className="text-slate-400 text-sm mt-2 leading-relaxed">
+                      Start your conversation now and connect instantly with
+                      others.
                     </p>
+
+                    <div className="mt-4 space-y-1 text-xs text-slate-500">
+                      <p>⚡ Send text, images & files</p>
+                      <p>🟢 Real-time messaging</p>
+                      <p>🔔 Instant notifications</p>
+                    </div>
+
+                    <motion.div
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="mt-6 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-sm backdrop-blur-md"
+                    >
+                      🚀 Send your first message
+                    </motion.div>
                   </div>
                 )
               ) : (
-                <div className="flex flex-col items-center justify-center h-full text-center py-10">
-                  <h1 className="text-2xl font-bold text-white">
-                    Welcome to Chat 👋
-                  </h1>
-                  <p className="text-slate-400 mt-2">
-                    Select a chat to start messaging
-                  </p>
+                <div className="flex flex-col md:flex-row items-center justify-center h-full min-h-[60vh] text-center md:text-left gap-6 md:gap-12 px-4 sm:px-6 relative overflow-hidden">
+                  {/* LEFT CONTENT */}
+                  <div className="flex flex-col items-center md:items-start max-w-sm w-full z-10">
+                    <motion.div
+                      animate={{ rotate: [0, 8, -8, 0] }}
+                      transition={{ repeat: Infinity, duration: 4 }}
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-3xl sm:text-4xl shadow-2xl"
+                    >
+                      👋
+                    </motion.div>
+
+                    <h1 className="mt-5 sm:mt-6 text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+                      Welcome to Zynk Chat
+                    </h1>
+
+                    <p className="text-slate-400 mt-3 text-xs sm:text-sm leading-relaxed">
+                      Select a conversation or start a new one to begin chatting
+                      in real-time.
+                    </p>
+
+                    <div className="mt-4 space-y-1 text-[11px] sm:text-xs text-slate-500">
+                      <p>💬 Chat with friends instantly</p>
+                      <p>📁 Share files & media</p>
+                      <p>👥 Create group conversations</p>
+                    </div>
+
+                    <motion.div
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="mt-5 sm:mt-6 px-3 sm:px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs sm:text-sm backdrop-blur-md"
+                    >
+                      👈 Choose a chat to start
+                    </motion.div>
+                  </div>
+
+                  {/* RIGHT IMAGE */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 60 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.7 }}
+                    className="relative z-10 mt-6 md:mt-0"
+                  >
+                    <motion.img
+                      src="https://cdn.phototourl.com/free/2026-04-12-30057522-9957-4f9e-9e1d-a5f47b184e5b.png"
+                      alt="welcome"
+                      className="w-44 sm:w-56 md:w-72 lg:w-80 mx-auto drop-shadow-2xl"
+                      animate={{ y: [0, -15, 0] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 5,
+                        ease: "easeInOut",
+                      }}
+                    />
+
+                    <div className="absolute inset-0 rounded-full border border-pink-500/20 blur-xl"></div>
+                  </motion.div>
                 </div>
               )}
             </div>
@@ -472,7 +541,7 @@ const ChatPage = () => {
           {/* INPUT */}
           {selectedChat && (
             <div className="border-t border-slate-800 bg-slate-900/60 backdrop-blur-md">
-              <div className="max-w-[900px] mx-auto px-3 sm:px-4 py-2">
+              <div className="max-w-[800px] mx-auto px-3 sm:px-4 py-2">
                 <MessageInput
                   onSend={handleSend}
                   selectedChat={selectedChat}
@@ -488,6 +557,3 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
-
-
-
