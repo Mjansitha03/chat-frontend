@@ -345,7 +345,7 @@ const ChatPage = () => {
   return (
     <div className={`h-screen ${theme.pageGradient}`}>
       {/* APP CONTAINER */}
-      <div className="h-full w-full flex relative overflow-hidden">
+      <div className="h-full w-[700px] flex relative overflow-hidden">
         {/* LEFT SIDEBAR */}
         <motion.div
           initial={{ x: -40, opacity: 0 }}
@@ -381,7 +381,7 @@ const ChatPage = () => {
         >
           {/* HEADER */}
           <div className="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md">
-            <div className="w-full px-1 sm:px-4 py-3 flex items-center">
+            <div className="px-1 sm:px-4 py-3 flex items-center">
               {selectedChat && (
                 <>
                   {/* BACK BUTTON */}
@@ -429,8 +429,8 @@ const ChatPage = () => {
           </div>
 
           {/* MESSAGES */}
-          <div className="flex-1 min-w-0 overflow-y-auto px-1 sm:px-4 py-3">
-            <div className="w-full space-y-3">
+          <div className="flex-1 px-1 sm:px-4 py-3">
+            <div className="space-y-3">
               {selectedChat ? (
                 messages?.length > 0 ? (
                   messages.map((msg) => (
