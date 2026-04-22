@@ -383,7 +383,7 @@ const ChatPage = () => {
         <motion.div
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="p-3 sm:p-4 border-b border-slate-800 bg-slate-900/40 flex items-center justify-between"
+          className="p-3 sm:p-4 border-b border-slate-800 bg-slate-900/40 flex items-center justify-between w-full md:w-2/4 lg:w-2/4"
         >
           {selectedChat ? (
             <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
