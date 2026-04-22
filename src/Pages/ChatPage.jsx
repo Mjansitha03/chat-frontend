@@ -353,7 +353,7 @@ const ChatPage = () => {
         className={`
   ${selectedChat ? "hidden md:flex" : "flex"}
   flex-col
-  w-full md:w-1/4 lg:w-1/4
+  w-full md:w-2/4 lg:w-2/4
   h-full
   border-r border-slate-800 backdrop-blur-xl
   transition-all duration-300 
@@ -383,7 +383,7 @@ const ChatPage = () => {
         <motion.div
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="p-3 sm:p-4 border-b border-slate-800 bg-slate-900/40 flex items-center justify-between w-full md:w-2/4 lg:w-2/4"
+          className="p-3 sm:p-4 border-b border-slate-800 bg-slate-900/40 flex items-center justify-between"
         >
           {selectedChat ? (
             <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
